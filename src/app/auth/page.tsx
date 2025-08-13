@@ -1,23 +1,31 @@
 "use client"
 
+
 import React, { useState } from "react";
-import DarkModeToggle from "../components/DarkModeToggle";
+import DarkModeToggle from "@/components/DarkModeToggle";
+import { supabase } from "@/lib/supabaseClient";
 
 const AuthPage: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
     const [darkMode, setDarkMode] = useState(true);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Dummy validation
+        setError("");
+        setSuccess("");
         if (!email || !password) {
-            setError("Please enter both email and password.");
+            setError("Preencha email e senha.");
             return;
         }
-        setError("");
-        // Handle login logic here
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+            setError("Email ou senha inválidos.");
+        } else {
+            setSuccess("Login realizado com sucesso!");
+        }
     };
 
     return (
@@ -27,6 +35,9 @@ const AuthPage: React.FC = () => {
                 <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
                 {error && (
                     <div className="mb-4 text-red-600 text-sm text-center">{error}</div>
+                )}
+                {success && (
+                    <div className="mb-4 text-green-600 text-sm text-center">{success}</div>
                 )}
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>

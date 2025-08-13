@@ -13,3 +13,38 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  user_id   String
+  products  Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id            String        @id @default(uuid())
+  name          String
+  user_id       String
+  categoryId    String
+  category      Category      @relation(fields: [categoryId], references: [id])
+  priceHistories PriceHistory[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("products")
+}
+
+model PriceHistory {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  user_id   String
+  price     Float
+  date      DateTime @default(now())
+
+  @@map("price_histories")
+}

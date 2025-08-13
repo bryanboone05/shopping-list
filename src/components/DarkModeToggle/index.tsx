@@ -9,7 +9,7 @@ const DarkModeToggle: React.FC<DarkModeToggleProps> = ({ darkMode, setDarkMode }
   <div className="flex justify-end mb-4">
     <button
       onClick={() => setDarkMode((prev) => !prev)}
-      className={`px-4 py-2 rounded transition text-sm cursor-pointer ${
+      className={`px-4 py-2 rounded transition-colors duration-300 text-sm cursor-pointer ${
         darkMode
           ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
           : "bg-gray-200 text-gray-800 hover:bg-gray-300"

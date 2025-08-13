@@ -4,19 +4,19 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 import { useState } from "react";
-import DarkModeToggle from "./components/DarkModeToggle";
+import DarkModeToggle from "@/components/DarkModeToggle";
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
 
   return (
     <main
-      className={`flex min-h-screen flex-col items-center justify-center px-4 ${
+      className={`flex min-h-screen flex-col items-center justify-center px-4 transition-colors duration-300 ${
         darkMode ? "bg-gray-900" : "bg-gray-50"
       }`}
     >
       <div
-        className={`rounded-lg shadow-md p-8 max-w-md w-full text-center ${
+        className={`rounded-lg shadow-md p-8 max-w-md w-full text-center transition-colors duration-300 ${
           darkMode ? "bg-gray-800" : "bg-white"
         }`}
       >
@@ -37,15 +37,29 @@ export default function Home() {
             👋
           </motion.span>
         </h1>
-        <p className={`mb-6 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-          Adicione itens à sua lista e gerencie suas compras de forma simples e eficiente.
+        <ul className={`mb-6 text-left list-disc pl-6 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+          <li>Organize suas compras de forma prática e rápida</li>
+          <li>Tenha acesso à sua lista em qualquer lugar</li>
+          <li>Modo escuro para mais conforto visual</li>
+          <li>Interface simples, moderna e intuitiva</li>
+        </ul>
+        <p className={`mb-6 text-center ${darkMode ? "text-gray-200" : "text-gray-700"}`}>
+          Faça login para começar a usar ou crie sua conta agora mesmo!
         </p>
-        <Link
-          href="/auth"
-          className="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Fazer Login
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Link
+            href="/auth"
+            className="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition text-center"
+          >
+            Fazer Login
+          </Link>
+          <Link
+            href="/register"
+            className={`inline-block border px-6 py-2 rounded transition text-center ${darkMode ? "border-blue-400 text-blue-200 hover:bg-blue-800" : "border-blue-600 text-blue-700 hover:bg-blue-100"}`}
+          >
+            Criar Conta
+          </Link>
+        </div>
       </div>
     </main>
   );
