@@ -121,6 +121,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
+import Spinner from '../components/Spinner'
 
 interface Product {
   id: string
@@ -140,6 +141,7 @@ export default function Dashboard() {
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
   const [history, setHistory] = useState<Record<string, PriceHistory[]>>({})
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
 
   // garante que o usuário esteja logado
@@ -151,6 +153,7 @@ export default function Dashboard() {
   }, [router])
 
   const fetchProducts = async () => {
+    setLoading(true)
     const { data, error } = await supabase
       .from('products')
       .select('*')
@@ -158,6 +161,7 @@ export default function Dashboard() {
 
     if (error) console.log('Erro ao buscar produtos:', error)
     else setProducts(data || [])
+    setLoading(false)
   }
 
   const handleAddProduct = async (e: React.FormEvent) => {
@@ -222,6 +226,10 @@ export default function Dashboard() {
   const handleLogout = async () => {
     await supabase.auth.signOut()
     router.push('/auth')
+  }
+
+  if (loading) {
+    return <Spinner />
   }
 
   return (
