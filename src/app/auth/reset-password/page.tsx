@@ -46,13 +46,11 @@ export default function ResetPasswordPage() {
     }
   }
 
-  if (loading) {
-    return <Spinner />
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form onSubmit={handleResetPassword} className="text-black w-96 p-6 bg-white shadow rounded space-y-4">
+    <div className="relative flex min-h-screen items-center justify-center bg-gray-100 px-4">
+      <Spinner show={loading} label="Atualizando senha..." />
+
+      <form onSubmit={handleResetPassword} className="w-full max-w-sm space-y-4 rounded bg-white p-6 text-black shadow">
         <h1 className="text-2xl font-bold text-center">Nova Senha</h1>
         <p className="text-sm text-gray-600 text-center">
           Digite sua nova senha
@@ -63,9 +61,10 @@ export default function ResetPasswordPage() {
           placeholder="Nova senha"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full rounded border p-2"
           required
           minLength={6}
+          disabled={loading}
         />
 
         <input
@@ -73,12 +72,17 @@ export default function ResetPasswordPage() {
           placeholder="Confirmar nova senha"
           value={confirmPassword}
           onChange={e => setConfirmPassword(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full rounded border p-2"
           required
           minLength={6}
+          disabled={loading}
         />
 
-        <button type="submit" className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        <button
+          type="submit"
+          className="w-full rounded bg-blue-600 py-2 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={loading}
+        >
           Redefinir Senha
         </button>
       </form>

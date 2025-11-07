@@ -56,6 +56,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
+import Header from "./components/Header";
 
 export default function HomePage() {
   const router = useRouter();
@@ -72,37 +73,41 @@ export default function HomePage() {
   }, [router]);
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white text-gray-800 px-4">
-      <div className="max-w-md text-center space-y-8">
-        <h1 className="text-4xl font-extrabold text-blue-700 tracking-tight">
-          🛒 Shopping List
-        </h1>
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-blue-50 to-white text-gray-800">
+      <Header />
 
-        <p className="text-lg text-gray-600">
-          Organize suas compras e acompanhe a variação de preços dos seus
-          produtos favoritos com facilidade.
-        </p>
+      <main className="flex flex-1 flex-col items-center justify-center px-4">
+        <div className="max-w-md space-y-8 text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight text-teal-700">
+            🛒 Shopping List
+          </h1>
 
-        <div className="flex flex-col gap-3 mt-8">
-          <button
-            onClick={() => router.push("/auth")}
-            className="bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition"
-          >
-            Entrar ou Criar Conta
-          </button>
+          <p className="text-lg text-gray-600">
+            Organize suas compras e acompanhe a variação de preços dos seus
+            produtos favoritos com facilidade.
+          </p>
 
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="border border-blue-600 text-blue-700 py-2 px-4 rounded-lg font-medium hover:bg-blue-50 transition"
-          >
-            Acessar Dashboard
-          </button>
+          <div className="mt-8 flex flex-col gap-3">
+            <button
+              onClick={() => router.push("/auth")}
+              className="rounded-lg bg-teal-600 py-2 px-4 font-medium text-white transition hover:bg-teal-700 cursor-pointer"
+            >
+              Entrar ou Criar Conta
+            </button>
+
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="rounded-lg border border-teal-600 py-2 px-4 font-medium text-teal-700 transition hover:bg-teal-50 cursor-pointer"
+            >
+              Acessar Dashboard
+            </button>
+          </div>
+
+          <footer className="mt-12 text-sm text-gray-500">
+            Feito com ❤️ usando Next.js + Supabase + TailwindCSS
+          </footer>
         </div>
-
-        <footer className="mt-12 text-sm text-gray-500">
-          Feito com 💙 usando Next.js + Supabase + TailwindCSS
-        </footer>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

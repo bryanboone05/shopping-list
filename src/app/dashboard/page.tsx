@@ -121,6 +121,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
+import Header from '../components/Header'
 import Spinner from '../components/Spinner'
 
 interface Product {
@@ -223,92 +224,85 @@ export default function Dashboard() {
     else setHistory(prev => ({ ...prev, [productId]: data || [] }))
   }
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/auth')
-  }
-
-  if (loading) {
-    return <Spinner />
-  }
-
   return (
-    <div className="min-h-screen text-black bg-gray-100 p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">🛒 Lista de Compras</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-        >
-          Sair
-        </button>
-      </div>
+    <div className="min-h-screen bg-gray-100 text-black">
+      <Header />
 
-      <form onSubmit={handleAddProduct} className="flex gap-2 mb-6">
-        <input
-          type="text"
-          placeholder="Nome do produto"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          className="flex-1 p-2 border rounded"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Preço"
-          value={price}
-          onChange={e => setPrice(e.target.value)}
-          className="w-32 p-2 border rounded"
-          required
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-        >
-          Adicionar
-        </button>
-      </form>
+      <Spinner show={loading} label="Carregando seus produtos..." />
 
-      <div className="bg-white shadow rounded p-4">
-        {products.length === 0 ? (
-          <p className="text-gray-500">Nenhum produto ainda.</p>
-        ) : (
-          <ul className="divide-y">
-            {products.map(prod => (
-              <li key={prod.id} className="py-2 flex justify-between items-center">
-                <div>
-                  <span className="font-medium">{prod.name}</span> -{' '}
-                  <span className="text-gray-700">R$ {prod.current_price.toFixed(2)}</span>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => toggleHistory(prod.id)}
-                    className="text-blue-600 hover:underline text-sm"
-                  >
-                    Histórico
-                  </button>
-                  <button
-                    onClick={() => handleDeleteProduct(prod.id)}
-                    className="text-red-600 hover:underline text-sm"
-                  >
-                    Deletar
-                  </button>
-                </div>
-                {history[prod.id] && history[prod.id].length > 0 && (
-                  <ul className="mt-2 ml-4 text-sm text-gray-600">
-                    {history[prod.id].map(h => (
-                      <li key={h.id}>
-                        R$ {h.price.toFixed(2)} -{' '}
-                        {new Date(h.recorded_at).toLocaleDateString()}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <main className="p-6">
+        <h1 className="mb-6 text-2xl font-bold">🛒 Lista de Compras</h1>
+
+        <form onSubmit={handleAddProduct} className="mb-6 flex gap-2">
+          <input
+            type="text"
+            placeholder="Nome do produto"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            className="flex-1 rounded border p-2"
+            required
+            disabled={loading}
+          />
+          <input
+            type="text"
+            placeholder="Preço"
+            value={price}
+            onChange={e => setPrice(e.target.value)}
+            className="w-32 rounded border p-2"
+            required
+            disabled={loading}
+          />
+          <button
+            type="submit"
+            className="rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={loading}
+          >
+            Adicionar
+          </button>
+        </form>
+
+        <div className="rounded bg-white p-4 shadow">
+          {products.length === 0 ? (
+            <p className="text-gray-500">Nenhum produto ainda.</p>
+          ) : (
+            <ul className="divide-y">
+              {products.map(prod => (
+                <li key={prod.id} className="py-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-medium">{prod.name}</span> -{' '}
+                      <span className="text-gray-700">R$ {prod.current_price.toFixed(2)}</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => toggleHistory(prod.id)}
+                        className="text-sm text-blue-600 transition hover:underline"
+                      >
+                        Histórico
+                      </button>
+                      <button
+                        onClick={() => handleDeleteProduct(prod.id)}
+                        className="text-sm text-red-600 transition hover:underline"
+                      >
+                        Deletar
+                      </button>
+                    </div>
+                  </div>
+                  {history[prod.id] && history[prod.id].length > 0 && (
+                    <ul className="mt-2 ml-4 space-y-1 text-sm text-gray-600">
+                      {history[prod.id].map(h => (
+                        <li key={h.id}>
+                          R$ {h.price.toFixed(2)} - {new Date(h.recorded_at).toLocaleDateString()}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </main>
     </div>
   )
 }

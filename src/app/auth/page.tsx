@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Spinner from '../components/Spinner';
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
+import Header from '../components/Header';
 
 export default function AuthPage() {
   const [email, setEmail] = useState('')
@@ -60,80 +61,117 @@ export default function AuthPage() {
     }
   }
 
+  const spinnerLabel = showResetPassword
+    ? 'Enviando e-mail de recuperação...'
+    : isLogin
+      ? 'Entrando na sua conta...'
+      : 'Criando sua conta...';
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      {loading ? (
-        <Spinner />
-      ) : showResetPassword ? (
-        <form onSubmit={handleResetPassword} className="text-black w-96 p-6 bg-white shadow rounded space-y-4">
-          <h1 className="text-2xl font-bold text-center">Recuperar Senha</h1>
-          <p className="text-sm text-gray-600 text-center">
-            Digite seu e-mail para receber um link de recuperação
-          </p>
+    <>
+      <Header />
+      <div className="relative flex min-h-screen items-center justify-center bg-gray-100 px-4">
+        <Spinner show={loading} label={spinnerLabel} />
 
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={resetEmail}
-            onChange={e => setResetEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-
-          <button type="submit" className="w-full py-2 bg-teal-600 text-white rounded cursor-pointer hover:bg-teal-700">
-            Enviar Link
-          </button>
-
-          <p
-            className="text-center text-teal-600 cursor-pointer text-sm hover:invert"
-            onClick={() => setShowResetPassword(false)}
-          >
-            Voltar ao login
-          </p>
-        </form>
-      ) : (
-        <form onSubmit={handleSubmit} className=" text-black w-96 p-6 bg-white shadow rounded space-y-4">
-          <h1 className="text-2xl font-bold text-center">{isLogin ? 'Acessar' : 'Criar conta'}</h1>
-
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-
-          <button type="submit" className="w-full py-2 bg-blue-600 text-white rounded cursor-pointer">
-            {isLogin ? 'Entrar' : 'Cadastrar'}
-          </button>
-
-          {isLogin && (
-            <p
-              className="text-center text-gray-600 cursor-pointer text-sm hover:text-blue-600"
-              onClick={() => setShowResetPassword(true)}
-            >
-              Esqueci minha senha
+        {showResetPassword ? (
+          <form onSubmit={handleResetPassword} className="w-full max-w-sm space-y-4 rounded bg-white p-6 text-black shadow">
+            <h1 className="text-center text-2xl font-bold">Recuperar Senha</h1>
+            <p className="text-center text-sm text-gray-600">
+              Digite seu e-mail para receber um link de recuperação
             </p>
-          )}
 
-          <p
-            className="text-center text-blue-600 cursor-pointer text-sm"
-            onClick={() => setIsLogin(!isLogin)}
+            <input
+              type="email"
+              name="email"
+              autoComplete="email"
+              placeholder="E-mail"
+              value={resetEmail}
+              onChange={e => setResetEmail(e.target.value)}
+              className="w-full rounded border p-2"
+              required
+              disabled={loading}
+            />
+
+            <button
+              type="submit"
+              className="w-full cursor-pointer rounded bg-teal-600 py-2 font-medium text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={loading}
+            >
+              Enviar Link
+            </button>
+
+            <button
+              type="button"
+              className="mx-auto block text-sm font-medium text-teal-600 transition hover:invert"
+              onClick={() => setShowResetPassword(false)}
+              disabled={loading}
+            >
+              Voltar ao login
+            </button>
+          </form>
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className="w-full max-w-sm space-y-4 rounded bg-white p-6 text-black shadow"
+            autoComplete="on"
           >
-            {isLogin ? 'Criar conta' : 'Já tenho conta'}
-          </p>
-        </form>
-      )}
-    </div>
-  )
+            <h1 className="text-center text-2xl font-bold">{isLogin ? 'Acessar' : 'Criar conta'}</h1>
+
+            <input
+              type="email"
+              name="email"
+              autoComplete="email"
+              placeholder="E-mail"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              className="w-full rounded border p-2"
+              required
+              disabled={loading}
+            />
+
+            <input
+              type="password"
+              name="password"
+              autoComplete={isLogin ? 'current-password' : 'new-password'}
+              placeholder="Senha"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              className="w-full rounded border p-2"
+              required
+              disabled={loading}
+              minLength={6}
+            />
+
+            <button
+              type="submit"
+              className="w-full cursor-pointer rounded bg-teal-600 py-2 font-medium text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={loading}
+            >
+              {isLogin ? 'Entrar' : 'Cadastrar'}
+            </button>
+
+            {isLogin && (
+              <button
+                type="button"
+                className="mx-auto block text-sm font-medium text-teal-600 transition hover:invert"
+                onClick={() => setShowResetPassword(true)}
+                disabled={loading}
+              >
+                Esqueci minha senha
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="mx-auto block text-sm font-medium text-teal-600 transition hover:invert"
+              onClick={() => setIsLogin(!isLogin)}
+              disabled={loading}
+            >
+              {isLogin ? 'Criar conta' : 'Já tenho conta'}
+            </button>
+          </form>
+        )}
+      </div>
+    </>
+  );
 }

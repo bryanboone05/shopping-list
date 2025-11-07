@@ -1,5 +1,7 @@
+'use client';
+
 import Spinner from '../components/Spinner';
 
 export default function Loading() {
-  return <Spinner />;
+  return <Spinner label="Carregando autenticação..." />;
 }
